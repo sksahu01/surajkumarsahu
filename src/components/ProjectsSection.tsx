@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github, Star } from "lucide-react";
-import Image from "next/image";
 
 const projects = [
     {
@@ -332,7 +331,7 @@ export default function ProjectsSection() {
                                 Interested in collaborating?
                             </h3>
                             <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                                I'm always open to discussing new opportunities, creative projects,
+                                I&apos;m always open to discussing new opportunities, creative projects,
                                 or just having a chat about technology and development.
                             </p>
                             <Button

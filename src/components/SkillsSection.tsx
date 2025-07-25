@@ -161,7 +161,7 @@ export default function SkillsSection() {
                         <CardContent className="p-8 text-center">
                             <h3 className="text-2xl font-bold text-white mb-6">Always Learning</h3>
                             <p className="text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
-                                Technology never stops evolving, and neither do I. I'm constantly expanding my skill set,
+                                Technology never stops evolving, and neither do I. I&apos;m constantly expanding my skill set,
                                 exploring new frameworks, and staying up-to-date with industry best practices to deliver
                                 cutting-edge solutions.
                             </p>

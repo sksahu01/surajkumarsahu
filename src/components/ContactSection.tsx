@@ -145,7 +145,7 @@ export default function ContactSection() {
                 >
                     <h2 className="text-4xl font-bold text-gradient mb-4">Get In Touch</h2>
                     <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                        Ready to bring your ideas to life? Let's start a conversation about your next project.
+                        Ready to bring your ideas to life? Let&apos;s start a conversation about your next project.
                     </p>
                 </motion.div>
 
@@ -165,7 +165,7 @@ export default function ContactSection() {
                                     </div>
                                     <div>
                                         <h3 className="text-2xl font-bold text-white">Send a Message</h3>
-                                        <p className="text-gray-400">I'd love to hear from you</p>
+                                        <p className="text-gray-400">I&apos;d love to hear from you</p>
                                     </div>
                                 </div>
                             </CardHeader>
@@ -276,7 +276,7 @@ export default function ContactSection() {
                                             className="flex items-center space-x-2 text-green-400 bg-green-600/10 p-3 rounded-lg border border-green-500/20"
                                         >
                                             <CheckCircle className="w-5 h-5" />
-                                            <span>Message sent successfully! I'll get back to you soon.</span>
+                                            <span>Message sent successfully! I&apos;ll get back to you soon.</span>
                                         </motion.div>
                                     )}
 
@@ -409,8 +409,8 @@ export default function ContactSection() {
                                         Open to New Opportunities
                                     </h3>
                                     <p className="text-gray-300 text-sm">
-                                        I'm currently available for freelance projects and full-time positions.
-                                        Let's discuss how we can work together!
+                                        I&apos;m currently available for freelance projects and full-time positions.
+                                        Let&apos;s discuss how we can work together!
                                     </p>
                                 </CardContent>
                             </Card>

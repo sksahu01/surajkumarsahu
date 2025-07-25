@@ -150,6 +150,25 @@ export default function SnakeGameSection() {
         };
     }, [isPlaying, gameOver, moveSnake, speed]);
 
+    const resetGame = useCallback(() => {
+        setSnake(INITIAL_SNAKE);
+        setFood(INITIAL_FOOD);
+        setDirection(INITIAL_DIRECTION);
+        setIsPlaying(false);
+        setGameOver(false);
+        setScore(0);
+        setSpeed(GAME_SPEED);
+        setShowGameOverDialog(false);
+    }, []);
+
+    const toggleGame = useCallback(() => {
+        if (gameOver) {
+            resetGame();
+        } else {
+            setIsPlaying(!isPlaying);
+        }
+    }, [gameOver, isPlaying, resetGame]);
+
     // Handle keyboard input
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
@@ -194,26 +213,7 @@ export default function SnakeGameSection() {
 
         window.addEventListener('keydown', handleKeyPress);
         return () => window.removeEventListener('keydown', handleKeyPress);
-    }, [isPlaying]);
-
-    const toggleGame = () => {
-        if (gameOver) {
-            resetGame();
-        } else {
-            setIsPlaying(!isPlaying);
-        }
-    };
-
-    const resetGame = () => {
-        setSnake(INITIAL_SNAKE);
-        setFood(INITIAL_FOOD);
-        setDirection(INITIAL_DIRECTION);
-        setIsPlaying(false);
-        setGameOver(false);
-        setScore(0);
-        setSpeed(GAME_SPEED);
-        setShowGameOverDialog(false);
-    };
+    }, [isPlaying, toggleGame, resetGame]);
 
     const getDifficultyLevel = () => {
         if (score >= 200) return { name: "Insane", color: "text-red-400" };

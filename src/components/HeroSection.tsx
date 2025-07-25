@@ -115,7 +115,7 @@ export default function HeroSection() {
                             className="mb-6"
                         >
                             <span className="inline-block px-4 py-2 bg-purple-600/20 border border-purple-500/30 rounded-full text-purple-300 text-sm font-medium">
-                                👋 Hello, I'm
+                                👋 Hello, I&apos;m
                             </span>
                         </motion.div>
 

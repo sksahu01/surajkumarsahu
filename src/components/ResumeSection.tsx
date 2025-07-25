@@ -443,7 +443,7 @@ export default function ResumeSection() {
                                 Ready to work together?
                             </h3>
                             <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                                I'm always looking for new opportunities to create amazing digital experiences
+                                I&apos;m always looking for new opportunities to create amazing digital experiences
                                 and solve complex problems with cutting-edge technology.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -467,7 +467,7 @@ export default function ResumeSection() {
                                     }}
                                 >
                                     <ExternalLink className="w-5 h-5 mr-2" />
-                                    Let's Connect
+                                    Let&apos;s Connect
                                 </Button>
                             </div>
                         </CardContent>

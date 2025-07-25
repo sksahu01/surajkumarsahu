@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, Home, User, Code, Briefcase, FileText, Gamepad2, Mail } from "lucide-react";
+import { Menu, Home, User, Code, Briefcase, FileText, Gamepad2, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [

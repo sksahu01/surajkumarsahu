@@ -72,13 +72,13 @@ export default function AboutSection() {
 
                                 <div className="space-y-4">
                                     <p className="text-gray-300 leading-relaxed">
-                                        I'm a passionate software developer with 3+ years of experience building
+                                        I&apos;m a passionate software developer with 3+ years of experience building
                                         modern web applications. I love turning complex problems into simple,
                                         beautiful solutions using cutting-edge technologies.
                                     </p>
 
                                     <p className="text-gray-300 leading-relaxed">
-                                        When I'm not coding, you'll find me exploring new technologies,
+                                        When I&apos;m not coding, you&apos;ll find me exploring new technologies,
                                         contributing to open-source projects, or sharing knowledge with the
                                         developer community. I believe in writing clean, maintainable code
                                         that makes a difference.
@@ -170,7 +170,7 @@ export default function AboutSection() {
                                         Always Learning, Always Growing
                                     </h4>
                                     <p className="text-gray-300 leading-relaxed">
-                                        Technology evolves rapidly, and so do I. I'm constantly exploring
+                                        Technology evolves rapidly, and so do I. I&apos;m constantly exploring
                                         new frameworks, tools, and methodologies to stay at the forefront
                                         of software development. My goal is to create impactful solutions
                                         that make a difference.
