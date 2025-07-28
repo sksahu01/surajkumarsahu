@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { CONTACT_INFO, SOCIAL_LINKS } from "@/lib/constants";
 import {
     Mail,
     Phone,
@@ -40,22 +41,22 @@ const contactInfo = [
     {
         icon: Mail,
         label: "Email",
-        value: "surajsahu96685@gmail.com",
-        href: "mailto:surajsahu96685@gmail.com",
+        value: CONTACT_INFO.email,
+        href: `mailto:${CONTACT_INFO.email}`,
         description: "Drop me a line anytime"
     },
     {
         icon: Phone,
         label: "Phone",
-        value: "+91 82492 47073",
-        href: "tel:+918249247073",
+        value: CONTACT_INFO.phone,
+        href: `tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`,
         description: "Let's have a conversation"
     },
     {
         icon: MapPin,
         label: "Location",
-        value: "Bhubaneswar, Odisha, India",
-        href: "https://maps.google.com/?q=Bhubaneswar,Odisha,India",
+        value: CONTACT_INFO.location,
+        href: `https://maps.google.com/?q=${encodeURIComponent(CONTACT_INFO.location)}`,
         description: "Available for remote work"
     },
     {
@@ -71,28 +72,28 @@ const socialLinks = [
     {
         name: "GitHub",
         icon: Github,
-        href: "https://github.com/sksahu01",
+        href: SOCIAL_LINKS.github,
         color: "hover:text-gray-400",
         description: "Check out my code"
     },
     {
         name: "LinkedIn",
         icon: Linkedin,
-        href: "https://linkedin.com/in/surajkumarsahu01",
+        href: SOCIAL_LINKS.linkedin,
         color: "hover:text-blue-400",
         description: "Connect professionally"
     },
     {
         name: "Twitter",
         icon: Twitter,
-        href: "https://x.com/sksahu_exe",
+        href: SOCIAL_LINKS.twitter,
         color: "hover:text-sky-400",
         description: "Follow my thoughts"
     },
     {
         name: "Instagram",
         icon: Instagram,
-        href: "https://linkedin.com/in/surajkumarsahu01",
+        href: SOCIAL_LINKS.instagram,
         color: "hover:text-pink-400",
         description: "See my journey"
     }
@@ -116,11 +117,20 @@ export default function ContactSection() {
         setSubmitStatus('idle');
 
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
 
-            // In a real implementation, you would send the data to your backend
-            console.log('Form submitted:', data);
+            if (!response.ok) {
+                throw new Error('Failed to send message');
+            }
+
+            const result = await response.json();
+            console.log('Email sent successfully:', result);
 
             setSubmitStatus('success');
             reset();
@@ -276,7 +286,7 @@ export default function ContactSection() {
                                             className="flex items-center space-x-2 text-green-400 bg-green-600/10 p-3 rounded-lg border border-green-500/20"
                                         >
                                             <CheckCircle className="w-5 h-5" />
-                                            <span>Message sent successfully! I&apos;ll get back to you soon.</span>
+                                            <span>Message sent successfully to {CONTACT_INFO.email}! I&apos;ll get back to you soon.</span>
                                         </motion.div>
                                     )}
 
@@ -287,7 +297,7 @@ export default function ContactSection() {
                                             className="flex items-center space-x-2 text-red-400 bg-red-600/10 p-3 rounded-lg border border-red-500/20"
                                         >
                                             <AlertCircle className="w-5 h-5" />
-                                            <span>Failed to send message. Please try again or contact me directly.</span>
+                                            <span>Failed to send message. Please try again or email me directly at {CONTACT_INFO.email}</span>
                                         </motion.div>
                                     )}
                                 </form>

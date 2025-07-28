@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { RESUME_LINKS } from "@/lib/constants";
 import {
     Download,
     Eye,
@@ -55,21 +56,21 @@ const education = [
         id: 1,
         degree: "Bachelor of Technology",
         field: "Computer Science & Engineering",
-        institution: "NIT Rourkela",
-        location: "Rourkela, India",
-        period: "2016 - 2020",
-        grade: "8.5 CGPA",
-        achievements: ["Dean's List", "Coding Club President", "Hackathon Winner"]
+        institution: "Institute of Technical Education & Research",
+        location: "Bhubaneswar, India",
+        period: "2022 - 2026",
+        grade: "9.24 CGPA",
+        achievements: ["CTO (Campus Technology Officer) CNXITER", "Tech lead GDG ITER", "(JUO) Junior Under Officer at SOA NCC", "WINNER🏆10X Ideathons", "Winner🏆8X Hackathons"]
     },
     {
         id: 2,
         degree: "Higher Secondary",
         field: "Science (PCM)",
-        institution: "DAV Public School",
-        location: "Rourkela, India",
-        period: "2014 - 2016",
-        grade: "92%",
-        achievements: ["Mathematics Olympiad", "Science Fair Winner"]
+        institution: "Kendriya Vidyalaya , Gopalpur Military Station",
+        location: "Brahmapur, India",
+        period: "2020 - 2022",
+        grade: "85.16%",
+        achievements: ["3rd prize in short film competition", "3rd Topper of Batch of 2022", "NCC A Certificate Holder", "Silver medal in National Level Taekwondo Poomsae "]
     }
 ];
 
@@ -109,19 +110,27 @@ const certifications = [
 ];
 
 export default function ResumeSection() {
-    const handleDownloadResume = () => {
-        // In a real implementation, this would download the actual resume PDF
-        const link = document.createElement('a');
-        link.href = '/resume/suraj-kumar-sahu-resume.pdf';
-        link.download = 'Suraj_Kumar_Sahu_Resume.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const handleDownloadResume = async () => {
+        try {
+            // Create a temporary link element to trigger download
+            const link = document.createElement('a');
+            link.href = RESUME_LINKS.download;
+            link.download = RESUME_LINKS.fileName;
+            link.target = '_blank';
+
+            // Append to body, click, and remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error downloading resume:', error);
+            // Fallback: open in new tab
+            window.open(RESUME_LINKS.viewOnline, '_blank');
+        }
     };
 
     const handleViewResume = () => {
-        // In a real implementation, this would open the resume in a new tab
-        window.open('/resume/suraj-kumar-sahu-resume.pdf', '_blank');
+        window.open(RESUME_LINKS.viewOnline, '_blank');
     };
 
     return (

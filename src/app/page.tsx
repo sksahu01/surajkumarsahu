@@ -14,11 +14,11 @@ export default function Home() {
       <Navigation />
       <HeroSection />
       <AboutSection />
-      <SkillsSection />
       <ProjectsSection />
+      <SkillsSection />
       <ResumeSection />
-      <ContactSection />
       <SnakeGameSection />
+      <ContactSection />
       <Footer />
     </main>
   );
