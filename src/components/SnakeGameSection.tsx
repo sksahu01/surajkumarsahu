@@ -1,358 +1,248 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SNAKE_GAME_CONFIG } from "@/lib/constants";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
     Play,
     Pause,
     RotateCcw,
     Trophy,
-    Gamepad2,
-    ArrowUp,
-    ArrowDown,
-    ArrowLeft,
-    ArrowRight,
-    Zap
+    Zap,
+    Home,
+    Volume2,
+    VolumeX
 } from "lucide-react";
 
-interface Position {
+type Position = {
     x: number;
     y: number;
-}
-
-interface GameState {
-    snake: Position[];
-    food: Position;
-    direction: Position;
-    gameOver: boolean;
-    score: number;
-    isPlaying: boolean;
-    speed: number;
-}
-
-const DIRECTIONS = {
-    UP: { x: 0, y: -1 },
-    DOWN: { x: 0, y: 1 },
-    LEFT: { x: -1, y: 0 },
-    RIGHT: { x: 1, y: 0 },
 };
 
+type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
+
+const GRID_SIZE = 20;
+const INITIAL_SNAKE = [{ x: 10, y: 10 }];
+const INITIAL_FOOD = { x: 15, y: 15 };
+const INITIAL_DIRECTION: Direction = 'RIGHT';
+const GAME_SPEED = 150;
+
 export default function SnakeGameSection() {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
-
-    const { canvasWidth, canvasHeight, tileSize, initialSpeed, speedIncrement, minSpeed } = SNAKE_GAME_CONFIG;
-    const gridWidth = canvasWidth / tileSize;
-    const gridHeight = canvasHeight / tileSize;
-
-    const [gameState, setGameState] = useState<GameState>(() => {
-        const initialSnake = [{ x: Math.floor(gridWidth / 2), y: Math.floor(gridHeight / 2) }];
-        let initialFood: Position;
-        do {
-            initialFood = {
-                x: Math.floor(Math.random() * gridWidth),
-                y: Math.floor(Math.random() * gridHeight),
-            };
-        } while (initialSnake.some(segment => segment.x === initialFood.x && segment.y === initialFood.y));
-
-        return {
-            snake: initialSnake,
-            food: initialFood,
-            direction: DIRECTIONS.RIGHT,
-            gameOver: false,
-            score: 0,
-            isPlaying: false,
-            speed: initialSpeed,
-        };
-    });
-
+    const [snake, setSnake] = useState<Position[]>(INITIAL_SNAKE);
+    const [food, setFood] = useState<Position>(INITIAL_FOOD);
+    const [direction, setDirection] = useState<Direction>(INITIAL_DIRECTION);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
+    const [score, setScore] = useState(0);
     const [highScore, setHighScore] = useState(0);
+    const [speed, setSpeed] = useState(GAME_SPEED);
+    const [soundEnabled, setSoundEnabled] = useState(true);
+    const [showGameOverDialog, setShowGameOverDialog] = useState(false);
 
-    // Load high score from localStorage on mount
+    const gameRef = useRef<HTMLDivElement>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Load high score from localStorage
     useEffect(() => {
-        const savedHighScore = localStorage.getItem("snake-high-score");
+        const savedHighScore = localStorage.getItem('snakeHighScore');
         if (savedHighScore) {
             setHighScore(parseInt(savedHighScore));
         }
     }, []);
 
-    // Generate random food position that doesn't overlap with snake
-    const generateFood = useCallback((snake: Position[]): Position => {
+    // Save high score to localStorage
+    useEffect(() => {
+        if (score > highScore) {
+            setHighScore(score);
+            localStorage.setItem('snakeHighScore', score.toString());
+        }
+    }, [score, highScore]);
+
+    // Generate random food position
+    const generateFood = useCallback((currentSnake: Position[]): Position => {
         let newFood: Position;
         do {
             newFood = {
-                x: Math.floor(Math.random() * gridWidth),
-                y: Math.floor(Math.random() * gridHeight),
+                x: Math.floor(Math.random() * GRID_SIZE),
+                y: Math.floor(Math.random() * GRID_SIZE)
             };
-        } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+        } while (currentSnake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
         return newFood;
-    }, [gridWidth, gridHeight]);
+    }, []);
 
-    // Wrap position to create infinite canvas
-    const wrapPosition = useCallback((pos: Position): Position => {
-        return {
-            x: ((pos.x % gridWidth) + gridWidth) % gridWidth,
-            y: ((pos.y % gridHeight) + gridHeight) % gridHeight,
-        };
-    }, [gridWidth, gridHeight]);
-
-    // Move snake and handle game logic
+    // Move snake
     const moveSnake = useCallback(() => {
-        setGameState(prevState => {
-            if (prevState.gameOver || !prevState.isPlaying) return prevState;
-
-            const newSnake = [...prevState.snake];
+        setSnake(currentSnake => {
+            const newSnake = [...currentSnake];
             const head = { ...newSnake[0] };
 
-            // Move head in current direction
-            head.x += prevState.direction.x;
-            head.y += prevState.direction.y;
+            // Move head based on direction
+            switch (direction) {
+                case 'UP':
+                    head.y -= 1;
+                    break;
+                case 'DOWN':
+                    head.y += 1;
+                    break;
+                case 'LEFT':
+                    head.x -= 1;
+                    break;
+                case 'RIGHT':
+                    head.x += 1;
+                    break;
+            }
 
-            // Wrap around edges (infinite canvas)
-            const wrappedHead = wrapPosition(head);
-            newSnake.unshift(wrappedHead);
+            // Check wall collision
+            if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                setGameOver(true);
+                setIsPlaying(false);
+                setShowGameOverDialog(true);
+                return currentSnake;
+            }
 
-            // Check if food is eaten
-            let newFood = prevState.food;
-            let newScore = prevState.score;
-            let newSpeed = prevState.speed;
+            // Check self collision
+            if (newSnake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                setGameOver(true);
+                setIsPlaying(false);
+                setShowGameOverDialog(true);
+                return currentSnake;
+            }
 
-            if (wrappedHead.x === prevState.food.x && wrappedHead.y === prevState.food.y) {
-                // Food eaten - don't remove tail, generate new food, increase score and speed
-                newFood = generateFood(newSnake);
-                newScore = prevState.score + 10;
-                newSpeed = Math.max(minSpeed, prevState.speed - speedIncrement);
+            newSnake.unshift(head);
 
-                // Update high score if needed
-                if (newScore > highScore) {
-                    setHighScore(newScore);
-                    localStorage.setItem("snake-high-score", newScore.toString());
+            // Check food collision
+            if (head.x === food.x && head.y === food.y) {
+                setScore(prev => prev + 10);
+                setFood(generateFood(newSnake));
+
+                // Increase speed slightly
+                setSpeed(prev => Math.max(80, prev - 2));
+
+                // Play eat sound (in real implementation)
+                if (soundEnabled) {
+                    // playEatSound();
                 }
             } else {
-                // No food eaten - remove tail
                 newSnake.pop();
             }
 
-            // Check collision with self
-            const gameOver = newSnake.slice(1).some(segment =>
-                segment.x === wrappedHead.x && segment.y === wrappedHead.y
-            );
-
-            return {
-                ...prevState,
-                snake: newSnake,
-                food: newFood,
-                score: newScore,
-                speed: newSpeed,
-                gameOver,
-                isPlaying: !gameOver,
-            };
+            return newSnake;
         });
-    }, [generateFood, wrapPosition, highScore, minSpeed, speedIncrement]);
-
-    // Handle keyboard input
-    const handleKeyPress = useCallback((event: KeyboardEvent) => {
-        const { direction } = gameState;
-        let newDirection = direction;
-
-        switch (event.key) {
-            case "ArrowUp":
-            case "w":
-            case "W":
-                if (direction.y !== 1) newDirection = DIRECTIONS.UP;
-                break;
-            case "ArrowDown":
-            case "s":
-            case "S":
-                if (direction.y !== -1) newDirection = DIRECTIONS.DOWN;
-                break;
-            case "ArrowLeft":
-            case "a":
-            case "A":
-                if (direction.x !== 1) newDirection = DIRECTIONS.LEFT;
-                break;
-            case "ArrowRight":
-            case "d":
-            case "D":
-                if (direction.x !== -1) newDirection = DIRECTIONS.RIGHT;
-                break;
-            case " ":
-                event.preventDefault();
-                if (gameState.gameOver) {
-                    resetGame();
-                    setTimeout(() => setGameState(prev => ({ ...prev, isPlaying: true })), 100);
-                } else if (gameState.isPlaying) {
-                    pauseGame();
-                } else {
-                    startGame();
-                }
-                return;
-        }
-
-        if (newDirection !== direction && !gameState.gameOver) {
-            setGameState(prev => ({ ...prev, direction: newDirection }));
-        }
-    }, [gameState.direction, gameState.gameOver, gameState.isPlaying]);
+    }, [direction, food, generateFood, soundEnabled]);
 
     // Game loop
     useEffect(() => {
-        if (gameState.isPlaying && !gameState.gameOver) {
-            gameLoopRef.current = setTimeout(moveSnake, gameState.speed);
+        if (isPlaying && !gameOver) {
+            intervalRef.current = setInterval(moveSnake, speed);
+        } else {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
         }
+
         return () => {
-            if (gameLoopRef.current) {
-                clearTimeout(gameLoopRef.current);
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
             }
         };
-    }, [gameState.isPlaying, gameState.gameOver, gameState.speed, moveSnake]);
+    }, [isPlaying, gameOver, moveSnake, speed]);
 
-    // Keyboard event listeners
+    const resetGame = useCallback(() => {
+        setSnake(INITIAL_SNAKE);
+        setFood(INITIAL_FOOD);
+        setDirection(INITIAL_DIRECTION);
+        setIsPlaying(false);
+        setGameOver(false);
+        setScore(0);
+        setSpeed(GAME_SPEED);
+        setShowGameOverDialog(false);
+    }, []);
+
+    const toggleGame = useCallback(() => {
+        if (gameOver) {
+            resetGame();
+        } else {
+            setIsPlaying(!isPlaying);
+        }
+    }, [gameOver, isPlaying, resetGame]);
+
+    // Handle keyboard input
     useEffect(() => {
-        window.addEventListener("keydown", handleKeyPress);
-        return () => window.removeEventListener("keydown", handleKeyPress);
-    }, [handleKeyPress]);
+        const handleKeyPress = (e: KeyboardEvent) => {
+            if (!isPlaying) return;
 
-    // Canvas rendering
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        // Clear canvas
-        ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        // Draw snake as circles
-        gameState.snake.forEach((segment, index) => {
-            const centerX = segment.x * tileSize + tileSize / 2;
-            const centerY = segment.y * tileSize + tileSize / 2;
-            const radius = (tileSize / 2) - 2;
-
-            // Create gradient for each segment
-            const gradient = ctx.createRadialGradient(
-                centerX, centerY, 0,
-                centerX, centerY, radius
-            );
-
-            if (index === 0) {
-                // Head - brighter purple with glow
-                gradient.addColorStop(0, "#e879f9");
-                gradient.addColorStop(0.7, "#a855f7");
-                gradient.addColorStop(1, "#7c3aed");
-            } else {
-                // Body - darker purple
-                gradient.addColorStop(0, "#a855f7");
-                gradient.addColorStop(0.7, "#8b5cf6");
-                gradient.addColorStop(1, "#6d28d9");
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    e.preventDefault();
+                    setDirection(prev => prev !== 'DOWN' ? 'UP' : prev);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    e.preventDefault();
+                    setDirection(prev => prev !== 'UP' ? 'DOWN' : prev);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    e.preventDefault();
+                    setDirection(prev => prev !== 'RIGHT' ? 'LEFT' : prev);
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    e.preventDefault();
+                    setDirection(prev => prev !== 'LEFT' ? 'RIGHT' : prev);
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    toggleGame();
+                    break;
+                case 'r':
+                case 'R':
+                    e.preventDefault();
+                    resetGame();
+                    break;
             }
+        };
 
-            ctx.fillStyle = gradient;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.fill();
+        window.addEventListener('keydown', handleKeyPress);
+        return () => window.removeEventListener('keydown', handleKeyPress);
+    }, [isPlaying, toggleGame, resetGame]);
 
-            // Add a subtle border for better visibility
-            ctx.strokeStyle = index === 0 ? "#f3e8ff" : "#ddd6fe";
-            ctx.lineWidth = 1;
-            ctx.stroke();
-        });
-
-        // Draw food as a glowing circle
-        const foodCenterX = gameState.food.x * tileSize + tileSize / 2;
-        const foodCenterY = gameState.food.y * tileSize + tileSize / 2;
-        const foodRadius = (tileSize / 2) - 3;
-
-        // Food gradient - golden/orange
-        const foodGradient = ctx.createRadialGradient(
-            foodCenterX, foodCenterY, 0,
-            foodCenterX, foodCenterY, foodRadius
-        );
-        foodGradient.addColorStop(0, "#fbbf24");
-        foodGradient.addColorStop(0.7, "#f59e0b");
-        foodGradient.addColorStop(1, "#d97706");
-
-        ctx.fillStyle = foodGradient;
-        ctx.beginPath();
-        ctx.arc(foodCenterX, foodCenterY, foodRadius, 0, 2 * Math.PI);
-        ctx.fill();
-
-        // Add food border
-        ctx.strokeStyle = "#fef3c7";
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Draw subtle grid lines
-        ctx.strokeStyle = "#1f1f1f";
-        ctx.lineWidth = 0.5;
-        for (let x = 0; x <= gridWidth; x++) {
-            ctx.beginPath();
-            ctx.moveTo(x * tileSize, 0);
-            ctx.lineTo(x * tileSize, canvasHeight);
-            ctx.stroke();
-        }
-        for (let y = 0; y <= gridHeight; y++) {
-            ctx.beginPath();
-            ctx.moveTo(0, y * tileSize);
-            ctx.lineTo(canvasWidth, y * tileSize);
-            ctx.stroke();
-        }
-    }, [gameState, canvasWidth, canvasHeight, tileSize, gridWidth, gridHeight]);
-
-    const startGame = () => {
-        setGameState(prev => ({ ...prev, isPlaying: true }));
+    const getDifficultyLevel = () => {
+        if (score >= 200) return { name: "Insane", color: "text-red-400" };
+        if (score >= 150) return { name: "Expert", color: "text-orange-400" };
+        if (score >= 100) return { name: "Hard", color: "text-yellow-400" };
+        if (score >= 50) return { name: "Medium", color: "text-blue-400" };
+        return { name: "Easy", color: "text-green-400" };
     };
 
-    const pauseGame = () => {
-        setGameState(prev => ({ ...prev, isPlaying: false }));
-    };
-
-    const resetGame = () => {
-        const newSnake = [{ x: Math.floor(gridWidth / 2), y: Math.floor(gridHeight / 2) }];
-        let newFood: Position;
-        do {
-            newFood = {
-                x: Math.floor(Math.random() * gridWidth),
-                y: Math.floor(Math.random() * gridHeight),
-            };
-        } while (newSnake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
-
-        setGameState({
-            snake: newSnake,
-            food: newFood,
-            direction: DIRECTIONS.RIGHT,
-            gameOver: false,
-            score: 0,
-            isPlaying: false,
-            speed: initialSpeed,
-        });
-    };
+    const difficulty = getDifficultyLevel();
 
     return (
         <section id="snake-game" className="min-h-screen py-20 bg-black">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Section Header */}
+                {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                     viewport={{ once: true }}
-                    className="text-center mb-12"
+                    className="text-center mb-8"
                 >
                     <h2 className="text-4xl font-bold text-gradient mb-4">Snake Game</h2>
-                    <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                        A classic game built with React and Canvas API. Test your skills and beat the high score!
-                    </p>
+                    <p className="text-gray-400 text-lg">Classic snake game with a modern twist</p>
                 </motion.div>
 
-                <div className="max-w-6xl mx-auto">
+                <div className="max-w-4xl mx-auto">
                     <div className="grid lg:grid-cols-3 gap-8">
-                        {/* Game Canvas */}
+                        {/* Game Board */}
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -361,82 +251,111 @@ export default function SnakeGameSection() {
                             className="lg:col-span-2"
                         >
                             <Card className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/30">
-                                <CardHeader className="text-center">
-                                    <div className="flex items-center justify-center space-x-4 mb-4">
+                                <CardHeader>
+                                    <div className="flex items-center justify-between">
+                                        <h3 className="text-xl font-bold text-white">Game Board</h3>
                                         <div className="flex items-center space-x-2">
-                                            <Trophy className="w-5 h-5 text-yellow-400" />
-                                            <span className="text-white font-semibold">Score: {gameState.score}</span>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => setSoundEnabled(!soundEnabled)}
+                                                className="text-gray-400 hover:text-white"
+                                            >
+                                                {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => {
+                                                    const element = document.querySelector("#hero");
+                                                    if (element) {
+                                                        element.scrollIntoView({ behavior: "smooth" });
+                                                    }
+                                                }}
+                                                className="text-gray-400 hover:text-white"
+                                            >
+                                                <Home className="w-4 h-4" />
+                                            </Button>
                                         </div>
-                                        <div className="flex items-center space-x-2">
-                                            <Zap className="w-5 h-5 text-purple-400" />
-                                            <span className="text-white font-semibold">High: {highScore}</span>
-                                        </div>
-                                        {gameState.isPlaying && (
-                                            <Badge className="bg-green-600/20 text-green-300 border-green-500/30">
-                                                Speed: {((initialSpeed - gameState.speed) / speedIncrement + 1).toFixed(0)}x
-                                            </Badge>
-                                        )}
                                     </div>
                                 </CardHeader>
-                                <CardContent className="flex flex-col items-center space-y-6">
-                                    {/* Canvas Container */}
-                                    <div className="relative">
-                                        <canvas
-                                            ref={canvasRef}
-                                            width={canvasWidth}
-                                            height={canvasHeight}
-                                            className="border-2 border-purple-500/30 rounded-lg bg-black shadow-2xl"
-                                        />
+                                <CardContent>
+                                    {/* Game Grid */}
+                                    <div
+                                        ref={gameRef}
+                                        className="relative bg-black border-2 border-purple-500/30 rounded-lg p-2 mx-auto"
+                                        style={{
+                                            width: `${GRID_SIZE * 20}px`,
+                                            height: `${GRID_SIZE * 20}px`
+                                        }}
+                                        tabIndex={0}
+                                    >
+                                        {/* Grid cells */}
+                                        <div className="absolute inset-2 grid grid-cols-20 gap-px">
+                                            {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, index) => {
+                                                const x = index % GRID_SIZE;
+                                                const y = Math.floor(index / GRID_SIZE);
+
+                                                const isSnakeSegment = snake.some(segment => segment.x === x && segment.y === y);
+                                                const isHead = snake[0]?.x === x && snake[0]?.y === y;
+                                                const isFood = food.x === x && food.y === y;
+
+                                                return (
+                                                    <div
+                                                        key={index}
+                                                        className={`
+                              w-4 h-4 rounded-sm transition-all duration-100
+                              ${isHead ? 'bg-purple-400 shadow-lg shadow-purple-400/50' : ''}
+                              ${isSnakeSegment && !isHead ? 'bg-purple-600' : ''}
+                              ${isFood ? 'bg-red-500 shadow-lg shadow-red-500/50 animate-pulse' : ''}
+                              ${!isSnakeSegment && !isFood ? 'bg-gray-900/30' : ''}
+                            `}
+                                                    >
+                                                        {isFood && (
+                                                            <motion.div
+                                                                initial={{ scale: 0 }}
+                                                                animate={{ scale: 1 }}
+                                                                className="w-full h-full bg-red-500 rounded-full"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
 
                                         {/* Game Over Overlay */}
-                                        {gameState.gameOver && (
-                                            <motion.div
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                className="absolute inset-0 bg-black/80 flex items-center justify-center rounded-lg"
-                                            >
-                                                <div className="text-center">
-                                                    <h3 className="text-2xl font-bold text-white mb-2">Game Over!</h3>
-                                                    <p className="text-gray-300 mb-4">Score: {gameState.score}</p>
-                                                    {gameState.score === highScore && gameState.score > 0 && (
-                                                        <p className="text-yellow-400 mb-4">🎉 New High Score!</p>
-                                                    )}
-                                                </div>
-                                            </motion.div>
-                                        )}
+                                        <AnimatePresence>
+                                            {gameOver && (
+                                                <motion.div
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    className="absolute inset-0 bg-black/80 flex items-center justify-center rounded-lg"
+                                                >
+                                                    <div className="text-center">
+                                                        <h4 className="text-2xl font-bold text-red-400 mb-2">Game Over!</h4>
+                                                        <p className="text-gray-300 mb-4">Final Score: {score}</p>
+                                                        <Button
+                                                            onClick={resetGame}
+                                                            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white border-0"
+                                                        >
+                                                            <RotateCcw className="w-4 h-4 mr-2" />
+                                                            Play Again
+                                                        </Button>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
 
-                                    {/* Game Controls */}
-                                    <div className="flex items-center space-x-4">
+                                    {/* Controls */}
+                                    <div className="mt-6 flex flex-wrap gap-3 justify-center">
                                         <Button
-                                            onClick={() => {
-                                                if (gameState.gameOver) {
-                                                    resetGame();
-                                                    setTimeout(() => startGame(), 100);
-                                                } else if (gameState.isPlaying) {
-                                                    pauseGame();
-                                                } else {
-                                                    startGame();
-                                                }
-                                            }}
+                                            onClick={toggleGame}
                                             className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white border-0"
                                         >
-                                            {gameState.gameOver ? (
-                                                <>
-                                                    <RotateCcw className="w-4 h-4 mr-2" />
-                                                    Restart
-                                                </>
-                                            ) : gameState.isPlaying ? (
-                                                <>
-                                                    <Pause className="w-4 h-4 mr-2" />
-                                                    Pause
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Play className="w-4 h-4 mr-2" />
-                                                    Start
-                                                </>
-                                            )}
+                                            {isPlaying ? <Pause className="w-4 h-4 mr-2" /> : <Play className="w-4 h-4 mr-2" />}
+                                            {gameOver ? 'New Game' : isPlaying ? 'Pause' : 'Start'}
                                         </Button>
 
                                         <Button
@@ -448,11 +367,16 @@ export default function SnakeGameSection() {
                                             Reset
                                         </Button>
                                     </div>
+
+                                    {/* Instructions */}
+                                    <div className="mt-6 text-center text-sm text-gray-400">
+                                        <p>Use arrow keys or WASD to move • Space to pause • R to reset</p>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </motion.div>
 
-                        {/* Game Instructions and Info */}
+                        {/* Sidebar */}
                         <motion.div
                             initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -460,113 +384,126 @@ export default function SnakeGameSection() {
                             viewport={{ once: true }}
                             className="space-y-6"
                         >
-                            {/* Instructions */}
+                            {/* Score */}
                             <Card className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/30">
                                 <CardHeader>
-                                    <div className="flex items-center space-x-3">
-                                        <div className="p-2 bg-purple-600/20 rounded-lg">
-                                            <Gamepad2 className="w-6 h-6 text-purple-400" />
-                                        </div>
-                                        <h3 className="text-xl font-bold text-white">How to Play</h3>
-                                    </div>
+                                    <h3 className="text-lg font-bold text-white flex items-center">
+                                        <Trophy className="w-5 h-5 mr-2 text-yellow-400" />
+                                        Score
+                                    </h3>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center space-x-3">
-                                            <div className="flex space-x-1">
-                                                <ArrowUp className="w-4 h-4 text-purple-400" />
-                                                <ArrowDown className="w-4 h-4 text-purple-400" />
-                                                <ArrowLeft className="w-4 h-4 text-purple-400" />
-                                                <ArrowRight className="w-4 h-4 text-purple-400" />
-                                            </div>
-                                            <span className="text-gray-300 text-sm">Arrow keys to move</span>
+                                    <div>
+                                        <div className="flex justify-between items-center mb-2">
+                                            <span className="text-gray-400">Current</span>
+                                            <motion.span
+                                                key={score}
+                                                initial={{ scale: 1.2, color: "#a855f7" }}
+                                                animate={{ scale: 1, color: "#ffffff" }}
+                                                className="text-2xl font-bold text-white"
+                                            >
+                                                {score}
+                                            </motion.span>
                                         </div>
-
-                                        <div className="flex items-center space-x-3">
-                                            <kbd className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded">WASD</kbd>
-                                            <span className="text-gray-300 text-sm">Alternative controls</span>
-                                        </div>
-
-                                        <div className="flex items-center space-x-3">
-                                            <kbd className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded">SPACE</kbd>
-                                            <span className="text-gray-300 text-sm">Pause/Resume</span>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-400">Best</span>
+                                            <span className="text-xl font-bold text-yellow-400">{highScore}</span>
                                         </div>
                                     </div>
 
                                     <div className="pt-4 border-t border-gray-700">
-                                        <h4 className="text-purple-300 font-semibold mb-2">Game Features:</h4>
-                                        <ul className="space-y-1 text-gray-400 text-sm">
-                                            <li>• Infinite canvas - wrap around edges</li>
-                                            <li>• Increasing speed with each food</li>
-                                            <li>• Score tracking and high scores</li>
-                                            <li>• Smooth animations and effects</li>
-                                        </ul>
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            {/* Game Stats */}
-                            <Card className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/30">
-                                <CardHeader>
-                                    <h3 className="text-xl font-bold text-white">Game Stats</h3>
-                                </CardHeader>
-                                <CardContent className="space-y-3">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-300">Current Score:</span>
-                                        <Badge className="bg-purple-600/20 text-purple-300 border-purple-500/30">
-                                            {gameState.score}
-                                        </Badge>
-                                    </div>
-
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-300">High Score:</span>
-                                        <Badge className="bg-yellow-600/20 text-yellow-300 border-yellow-500/30">
-                                            {highScore}
-                                        </Badge>
-                                    </div>
-
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-300">Snake Length:</span>
-                                        <Badge className="bg-green-600/20 text-green-300 border-green-500/30">
-                                            {gameState.snake.length}
-                                        </Badge>
-                                    </div>
-
-                                    {gameState.isPlaying && (
                                         <div className="flex justify-between items-center">
-                                            <span className="text-gray-300">Speed Level:</span>
-                                            <Badge className="bg-red-600/20 text-red-300 border-red-500/30">
-                                                {((initialSpeed - gameState.speed) / speedIncrement + 1).toFixed(0)}x
+                                            <span className="text-gray-400">Level</span>
+                                            <Badge className={`${difficulty.color} bg-transparent border-current`}>
+                                                {difficulty.name}
                                             </Badge>
                                         </div>
-                                    )}
+                                    </div>
                                 </CardContent>
                             </Card>
 
-                            {/* Game Status */}
+                            {/* Stats */}
                             <Card className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/30">
-                                <CardContent className="p-4 text-center">
-                                    {gameState.gameOver ? (
-                                        <div className="text-red-400">
-                                            <Trophy className="w-8 h-8 mx-auto mb-2" />
-                                            <p className="font-semibold">Game Over</p>
-                                        </div>
-                                    ) : gameState.isPlaying ? (
-                                        <div className="text-green-400">
-                                            <Play className="w-8 h-8 mx-auto mb-2" />
-                                            <p className="font-semibold">Playing</p>
-                                        </div>
-                                    ) : (
-                                        <div className="text-yellow-400">
-                                            <Pause className="w-8 h-8 mx-auto mb-2" />
-                                            <p className="font-semibold">Paused</p>
-                                        </div>
-                                    )}
+                                <CardHeader>
+                                    <h3 className="text-lg font-bold text-white flex items-center">
+                                        <Zap className="w-5 h-5 mr-2 text-purple-400" />
+                                        Stats
+                                    </h3>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-400">Length</span>
+                                        <span className="text-white font-semibold">{snake.length}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-400">Food Eaten</span>
+                                        <span className="text-white font-semibold">{Math.floor(score / 10)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-400">Speed</span>
+                                        <span className="text-white font-semibold">{Math.round((GAME_SPEED - speed) / 10) + 1}x</span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Instructions */}
+                            <Card className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/30">
+                                <CardHeader>
+                                    <h3 className="text-lg font-bold text-white">How to Play</h3>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3 text-sm text-gray-300">
+                                        <div>• Use arrow keys or WASD to control the snake</div>
+                                        <div>• Eat the red food to grow and score points</div>
+                                        <div>• Avoid hitting walls and yourself</div>
+                                        <div>• Speed increases as you score more</div>
+                                        <div>• Press Space to pause/resume</div>
+                                        <div>• Press R to reset the game</div>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </motion.div>
                     </div>
                 </div>
+
+                {/* Game Over Dialog */}
+                <Dialog open={showGameOverDialog} onOpenChange={setShowGameOverDialog}>
+                    <DialogContent className="bg-gradient-to-br from-purple-900/20 to-black border-purple-500/30">
+                        <DialogHeader>
+                            <DialogTitle className="text-2xl text-center text-white">
+                                {score > highScore ? "New High Score! 🎉" : "Game Over!"}
+                            </DialogTitle>
+                        </DialogHeader>
+                        <div className="text-center space-y-4">
+                            <div className="text-4xl font-bold text-purple-400">{score}</div>
+                            <p className="text-gray-300">
+                                {score > highScore
+                                    ? "Congratulations! You've set a new personal best!"
+                                    : `You were ${highScore - score} points away from your best score.`
+                                }
+                            </p>
+                            <div className="flex gap-3 justify-center">
+                                <Button
+                                    onClick={() => {
+                                        resetGame();
+                                        setIsPlaying(true);
+                                    }}
+                                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white border-0"
+                                >
+                                    <Play className="w-4 h-4 mr-2" />
+                                    Play Again
+                                </Button>
+                                <Button
+                                    onClick={() => setShowGameOverDialog(false)}
+                                    variant="outline"
+                                    className="border-purple-500 text-purple-300 hover:bg-purple-600 hover:text-white"
+                                >
+                                    Close
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </section>
     );
