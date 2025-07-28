@@ -19,25 +19,25 @@ const socialLinks = [
     {
         name: "GitHub",
         icon: Github,
-        href: "https://github.com/surajkumarsahu01",
+        href: "https://github.com/sksahu01",
         color: "hover:text-gray-400"
     },
     {
         name: "LinkedIn",
         icon: Linkedin,
-        href: "https://linkedin.com/in/suraj-kumar-sahu",
+        href: "https://linkedin.com/in/surajkumarsahu01",
         color: "hover:text-blue-400"
     },
     {
         name: "Twitter",
         icon: Twitter,
-        href: "https://twitter.com/surajkumarsahu01",
+        href: "https://x.com/sksahu_exe",
         color: "hover:text-sky-400"
     },
     {
         name: "Instagram",
         icon: Instagram,
-        href: "https://instagram.com/surajkumarsahu01",
+        href: "https://linkedin.com/in/surajkumarsahu01",
         color: "hover:text-pink-400"
     }
 ];
@@ -82,7 +82,7 @@ export default function Footer() {
                             </div>
                             <div>
                                 <h3 className="text-2xl font-bold text-white">Suraj Kumar Sahu</h3>
-                                <p className="text-purple-300">Full-Stack Developer</p>
+                                <p className="text-purple-300">Software Developer</p>
                             </div>
                         </div>
 
@@ -155,7 +155,7 @@ export default function Footer() {
                                 className="flex items-center space-x-3 text-gray-400 hover:text-purple-300 transition-colors duration-200"
                             >
                                 <Mail className="w-5 h-5" />
-                                <span>surajkumarsahu01@gmail.com</span>
+                                <span>surajsahu96685@gmail.com</span>
                             </a>
 
                             <div className="pt-4">

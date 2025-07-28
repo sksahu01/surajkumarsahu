@@ -26,13 +26,13 @@ const socialLinks = [
         color: "hover:text-blue-400"
     },
     {
-        href: "https://github.com/surajkumarsahu01",
+        href: "https://github.com/sksahu01",
         icon: Github,
         label: "GitHub",
         color: "hover:text-gray-400"
     },
     {
-        href: "mailto:surajkumarsahu@email.com",
+        href: "mailto:surajsahu96685@gmail.com",
         icon: Mail,
         label: "Email",
         color: "hover:text-red-400"
@@ -149,7 +149,7 @@ export default function HeroSection() {
                             className="text-gray-300 text-lg mb-8 max-w-2xl leading-relaxed"
                         >
                             Passionate about creating innovative solutions through code.
-                            Specialized in full-stack development with modern technologies,
+                            Specialized in DevOps, Flutter, and full-stack development with modern technologies,
                             bringing ideas to life with clean, efficient, and scalable applications.
                         </motion.p>
 
@@ -173,6 +173,7 @@ export default function HeroSection() {
                                 size="lg"
                                 variant="outline"
                                 className="border-purple-500 text-purple-300 hover:bg-purple-600 hover:text-white"
+                                onClick={() => window.open("https://drive.google.com/file/d/1IrpFcEI0zK76FavL0OUNVEE11e17ztBF/view?usp=sharing", "_blank")}
                             >
                                 <Download className="w-4 h-4 mr-2" />
                                 Download Resume

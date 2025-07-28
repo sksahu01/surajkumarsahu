@@ -40,22 +40,22 @@ const contactInfo = [
     {
         icon: Mail,
         label: "Email",
-        value: "surajkumarsahu01@gmail.com",
-        href: "mailto:surajkumarsahu01@gmail.com",
+        value: "surajsahu96685@gmail.com",
+        href: "mailto:surajsahu96685@gmail.com",
         description: "Drop me a line anytime"
     },
     {
         icon: Phone,
         label: "Phone",
-        value: "+91 98765 43210",
-        href: "tel:+919876543210",
+        value: "+91 82492 47073",
+        href: "tel:+918249247073",
         description: "Let's have a conversation"
     },
     {
         icon: MapPin,
         label: "Location",
-        value: "Rourkela, India",
-        href: "https://maps.google.com/?q=Rourkela,India",
+        value: "Bhubaneswar, Odisha, India",
+        href: "https://maps.google.com/?q=Bhubaneswar,Odisha,India",
         description: "Available for remote work"
     },
     {
@@ -71,28 +71,28 @@ const socialLinks = [
     {
         name: "GitHub",
         icon: Github,
-        href: "https://github.com/surajkumarsahu01",
+        href: "https://github.com/sksahu01",
         color: "hover:text-gray-400",
         description: "Check out my code"
     },
     {
         name: "LinkedIn",
         icon: Linkedin,
-        href: "https://linkedin.com/in/suraj-kumar-sahu",
+        href: "https://linkedin.com/in/surajkumarsahu01",
         color: "hover:text-blue-400",
         description: "Connect professionally"
     },
     {
         name: "Twitter",
         icon: Twitter,
-        href: "https://twitter.com/surajkumarsahu01",
+        href: "https://x.com/sksahu_exe",
         color: "hover:text-sky-400",
         description: "Follow my thoughts"
     },
     {
         name: "Instagram",
         icon: Instagram,
-        href: "https://instagram.com/surajkumarsahu01",
+        href: "https://linkedin.com/in/surajkumarsahu01",
         color: "hover:text-pink-400",
         description: "See my journey"
     }

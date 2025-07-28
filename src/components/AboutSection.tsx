@@ -8,18 +8,19 @@ import { Code, Coffee, Lightbulb, Target } from "lucide-react";
 
 const stats = [
     { label: "Years Experience", value: "3+", icon: Code },
-    { label: "Projects Completed", value: "50+", icon: Target },
+    { label: "Projects Completed", value: "10+", icon: Target },
     { label: "Cups of Coffee", value: "1000+", icon: Coffee },
     { label: "Ideas Implemented", value: "100+", icon: Lightbulb },
 ];
 
 const highlights = [
+    "Cloud computing & DevOps",
     "Full-stack web development",
     "Modern JavaScript frameworks",
-    "Cloud computing & DevOps",
+    "Responsive UI/UX design",
+    "Performance optimization",
     "Database design & optimization",
-    "API development & integration",
-    "Mobile app development",
+    "Flutter Mobile app development",
 ];
 
 export default function AboutSection() {
@@ -60,7 +61,7 @@ export default function AboutSection() {
                                         <Avatar className="w-24 h-24 border-4 border-purple-500 glow-purple">
                                             <AvatarImage src="/profile-image.jpg" alt="Suraj Kumar Sahu" />
                                             <AvatarFallback className="text-2xl font-bold bg-gradient-to-br from-purple-600 to-purple-800 text-white">
-                                                SK
+                                                Suraj Kumar Sahu
                                             </AvatarFallback>
                                         </Avatar>
                                     </motion.div>
@@ -73,7 +74,7 @@ export default function AboutSection() {
                                 <div className="space-y-4">
                                     <p className="text-gray-300 leading-relaxed">
                                         I&apos;m a passionate software developer with 3+ years of experience building
-                                        modern web applications. I love turning complex problems into simple,
+                                        modern mobile app and web applications. I love turning complex problems into simple,
                                         beautiful solutions using cutting-edge technologies.
                                     </p>
 
