@@ -10,24 +10,24 @@ const skillCategories = [
         title: "Frontend Development",
         icon: "🎨",
         skills: [
-            { name: "React", level: 95, color: "from-blue-500 to-blue-600" },
-            { name: "Next.js", level: 90, color: "from-gray-700 to-gray-800" },
-            { name: "TypeScript", level: 88, color: "from-blue-600 to-blue-700" },
-            { name: "Tailwind CSS", level: 92, color: "from-cyan-500 to-cyan-600" },
-            { name: "JavaScript", level: 95, color: "from-yellow-500 to-yellow-600" },
-            { name: "HTML/CSS", level: 98, color: "from-orange-500 to-orange-600" },
+            { name: "React", level: 87, color: "from-blue-500 to-blue-600" },
+            { name: "Next.js", level: 86, color: "from-gray-700 to-gray-800" },
+            { name: "TypeScript", level: 78, color: "from-blue-600 to-blue-700" },
+            { name: "Tailwind CSS", level: 85, color: "from-cyan-500 to-cyan-600" },
+            { name: "JavaScript", level: 84, color: "from-yellow-500 to-yellow-600" },
+            { name: "HTML/CSS", level: 90, color: "from-orange-500 to-orange-600" },
         ]
     },
     {
         title: "Backend Development",
         icon: "⚙️",
         skills: [
-            { name: "Node.js", level: 85, color: "from-green-500 to-green-600" },
+            { name: "Node.js", level: 70, color: "from-green-500 to-green-600" },
             { name: "Python", level: 80, color: "from-blue-500 to-yellow-500" },
-            { name: "Express.js", level: 88, color: "from-gray-600 to-gray-700" },
-            { name: "MongoDB", level: 82, color: "from-green-600 to-green-700" },
-            { name: "PostgreSQL", level: 78, color: "from-blue-600 to-blue-700" },
-            { name: "REST APIs", level: 90, color: "from-purple-500 to-purple-600" },
+            { name: "Express.js", level: 68, color: "from-gray-600 to-gray-700" },
+            { name: "MongoDB", level: 78, color: "from-green-600 to-green-700" },
+            { name: "Firebase", level: 78, color: "from-blue-600 to-blue-700" },
+            { name: "REST APIs", level: 80, color: "from-purple-500 to-purple-600" },
         ]
     },
     {
@@ -46,12 +46,12 @@ const skillCategories = [
         title: "Design & Others",
         icon: "🎯",
         skills: [
-            { name: "Figma", level: 75, color: "from-purple-500 to-pink-500" },
-            { name: "UI/UX Design", level: 80, color: "from-pink-500 to-purple-500" },
-            { name: "Mobile Development", level: 72, color: "from-green-500 to-blue-500" },
-            { name: "Testing", level: 78, color: "from-red-500 to-pink-500" },
-            { name: "Agile/Scrum", level: 85, color: "from-indigo-500 to-purple-500" },
-            { name: "Team Leadership", level: 80, color: "from-yellow-500 to-orange-500" },
+            { name: "Figma", level: 70, color: "from-purple-500 to-pink-500" },
+            { name: "UI/UX Design", level: 65, color: "from-pink-500 to-purple-500" },
+            { name: "Mobile Development", level: 85, color: "from-green-500 to-blue-500" },
+            { name: "Testing", level: 70, color: "from-red-500 to-pink-500" },
+            { name: "Agile/Scrum", level: 95, color: "from-indigo-500 to-purple-500" },
+            { name: "Team Leadership", level: 95, color: "from-yellow-500 to-orange-500" },
         ]
     }
 ];
@@ -168,7 +168,7 @@ export default function SkillsSection() {
 
                             {/* Currently Learning */}
                             <div className="flex flex-wrap justify-center gap-3">
-                                {["GraphQL", "Kubernetes", "Machine Learning", "Blockchain", "Web3", "Rust"].map((tech, index) => (
+                                {["Flutter", "Dart", "Machine Learning", "Docker", "Kubernetes", "Terraform", "Jenkins", "Next.js", "Git"].map((tech, index) => (
                                     <motion.div
                                         key={tech}
                                         initial={{ opacity: 0, scale: 0.8 }}

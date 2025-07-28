@@ -21,32 +21,22 @@ import {
 const experiences = [
     {
         id: 1,
-        title: "Senior Full-Stack Developer",
-        company: "TechCorp Solutions",
-        location: "San Francisco, CA",
-        period: "2022 - Present",
-        description: "Led development of scalable web applications serving 100K+ users. Architected microservices infrastructure and mentored junior developers.",
-        technologies: ["React", "Node.js", "AWS", "MongoDB", "TypeScript"],
-        type: "Full-time"
+        title: "Mobile Application Developer",
+        company: "Psynux Software Private Limited",
+        location: "Bhubaneswar, India",
+        period: "Jun 2025 - Present",
+        description: "Independently developing a mobile app for a premium EV ride-hailing service using Flutter (Dart) and Node.js (Express.js), focusing on scalable architecture, real-time ride management, authentication, location-based services, and seamless user experience.",
+        technologies: ["Flutter", "Dart", "Node.js", "Express.js", "MongoDB", "TypeScript", "Figma"],
+        type: "Internship"
     },
     {
         id: 2,
-        title: "Frontend Developer",
-        company: "StartupXYZ",
-        location: "Austin, TX",
-        period: "2020 - 2022",
-        description: "Built responsive web applications using modern JavaScript frameworks. Collaborated with design team to implement pixel-perfect UI/UX.",
-        technologies: ["Vue.js", "JavaScript", "SCSS", "Firebase", "Figma"],
-        type: "Full-time"
-    },
-    {
-        id: 3,
-        title: "Web Developer Intern",
-        company: "Digital Agency Pro",
-        location: "Remote",
-        period: "2019 - 2020",
-        description: "Developed client websites and learned industry best practices. Gained experience in responsive design and cross-browser compatibility.",
-        technologies: ["HTML", "CSS", "JavaScript", "WordPress", "PHP"],
+        title: "Project Management",
+        company: "Evotto Private Limited",
+        location: "Bhubaneswar, India",
+        period: "Jan 2025 - Mar 2025",
+        description: "Worked on developing an eCommerce platform for vehicle rentals, contributing to research, planning, and execution while coordinating with cross-functional teams, analyzing data, managing resources, and ensuring timely, high-quality project delivery. Led a team of 9 developers, implementing Agile methodologies to enhance productivity and collaboration.",
+        technologies: ["React.js", "JavaScript", "MongoDB", "Node.js", "Express.js", "Figma"],
         type: "Internship"
     }
 ];
@@ -77,34 +67,34 @@ const education = [
 const certifications = [
     {
         id: 1,
-        name: "AWS Certified Solutions Architect",
-        issuer: "Amazon Web Services",
-        date: "2023",
-        credentialId: "AWS-SA-2023-001",
+        name: "SAP Activate - Implementation Tools and Methodology",
+        issuer: "SAP",
+        date: "2025",
+        credentialId: "P2010162007",
         icon: "🏆"
     },
     {
         id: 2,
-        name: "React Professional Developer",
-        issuer: "Meta",
-        date: "2022",
-        credentialId: "META-REACT-2022-456",
+        name: "Managing Clean Core for SAP S/4HANA Cloud ",
+        issuer: "SAP",
+        date: "2025",
+        credentialId: "a2ec5522-b5de-4b76-a3fd-c1dde683c4c7",
         icon: "⚛️"
     },
     {
         id: 3,
-        name: "JavaScript Algorithms and Data Structures",
-        issuer: "freeCodeCamp",
-        date: "2021",
-        credentialId: "FCC-JS-2021-789",
+        name: "Introducing the Aerospace & Defense Industry",
+        issuer: "SAP",
+        date: "2025",
+        credentialId: "NA",
         icon: "📜"
     },
     {
         id: 4,
-        name: "Google Cloud Professional",
-        issuer: "Google Cloud",
-        date: "2023",
-        credentialId: "GCP-PRO-2023-123",
+        name: "Google Cloud Study Jam",
+        issuer: "Google Cloud Platform",
+        date: "2024",
+        credentialId: "NA",
         icon: "☁️"
     }
 ];
@@ -402,7 +392,7 @@ export default function ResumeSection() {
                                         <div>
                                             <h4 className="text-purple-300 font-semibold mb-2">Frontend</h4>
                                             <div className="flex flex-wrap gap-2">
-                                                {["React", "Next.js", "Vue.js", "TypeScript", "Tailwind CSS"].map((skill) => (
+                                                {["Flutter", "JavaScript", "HTML", "CSS", "React", "Next.js", "Vue.js", "TypeScript", "Tailwind CSS"].map((skill) => (
                                                     <Badge key={skill} className="bg-blue-600/20 text-blue-300 border-blue-500/30">
                                                         {skill}
                                                     </Badge>
@@ -413,7 +403,7 @@ export default function ResumeSection() {
                                         <div>
                                             <h4 className="text-purple-300 font-semibold mb-2">Backend</h4>
                                             <div className="flex flex-wrap gap-2">
-                                                {["Node.js", "Express.js", "Python", "MongoDB", "PostgreSQL"].map((skill) => (
+                                                {["Node.js", "Express.js", "Python", "MongoDB", "Firebase", "Flutter"].map((skill) => (
                                                     <Badge key={skill} className="bg-green-600/20 text-green-300 border-green-500/30">
                                                         {skill}
                                                     </Badge>
@@ -424,7 +414,7 @@ export default function ResumeSection() {
                                         <div>
                                             <h4 className="text-purple-300 font-semibold mb-2">Tools & Platforms</h4>
                                             <div className="flex flex-wrap gap-2">
-                                                {["AWS", "Docker", "Git", "Figma", "VS Code"].map((skill) => (
+                                                {["AWS", "Docker", "Git", "Github", "Figma", "VS Code", "Jira", "Postman", "Kubernetes", "Terraform", "Jenkins"].map((skill) => (
                                                     <Badge key={skill} className="bg-purple-600/20 text-purple-300 border-purple-500/30">
                                                         {skill}
                                                     </Badge>

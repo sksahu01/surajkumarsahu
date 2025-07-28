@@ -5,15 +5,16 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Github, Star } from "lucide-react";
+import { fa } from "zod/v4/locales";
 
 const projects = [
     {
         id: 1,
-        title: "E-Commerce Platform",
-        description: "A full-stack e-commerce solution with modern design, secure payment integration, and admin dashboard. Built with Next.js, TypeScript, and Stripe.",
+        title: "AngioSense (Non-invasive IoT Health Device)",
+        description: "AngioSense is a non-invasive IoT-based health device designed for real-time blood clot detection and remote health monitoring through mobile and cloud integration. It features a user-friendly interface for patients and healthcare providers, ensuring timely alerts and data access.",
         image: "/projects/ecommerce.jpg",
-        technologies: ["Next.js", "TypeScript", "Stripe", "MongoDB", "Tailwind CSS"],
-        githubUrl: "https://github.com/surajkumarsahu01/ecommerce-platform",
+        technologies: ["Flutter", "Next.js", "TypeScript", "MongoDB", "Tailwind CSS"],
+        githubUrl: "https://github.com/sksahu01/Angiosense",
         liveUrl: "https://ecommerce-demo.vercel.app",
         featured: true,
         status: "Completed",
@@ -21,11 +22,11 @@ const projects = [
     },
     {
         id: 2,
-        title: "Task Management App",
-        description: "Collaborative task management application with real-time updates, team collaboration features, and intuitive drag-and-drop interface.",
+        title: "ResQube (Smart Avalanche Rescue System)",
+        description: "ResQube is a smart avalanche rescue system that leverages IoT technology for real-time monitoring and rescue operations in avalanche-prone areas. It features a network of sensors and a mobile app for tracking and communication.",
         image: "/projects/taskmanager.jpg",
-        technologies: ["React", "Node.js", "Socket.io", "PostgreSQL", "Material-UI"],
-        githubUrl: "https://github.com/surajkumarsahu01/task-manager",
+        technologies: ["Flutter", "Firebase", "React", "Node.js", "AWS DynamoDB", "LoRaWAN"],
+        githubUrl: "https://github.com/sksahu01/ResQube",
         liveUrl: "https://taskmanager-demo.vercel.app",
         featured: true,
         status: "Completed",
@@ -33,23 +34,23 @@ const projects = [
     },
     {
         id: 3,
-        title: "Weather Analytics Dashboard",
-        description: "Real-time weather data visualization with interactive charts, forecasts, and location-based insights using modern data visualization libraries.",
+        title: "CrimeVision (AI-based Intelligent Surveillance System)",
+        description: "AI-based intelligent surveillance system for real-time monitoring and threat detection using advanced computer vision techniques.",
         image: "/projects/weather.jpg",
-        technologies: ["Vue.js", "D3.js", "Python", "Flask", "Chart.js"],
-        githubUrl: "https://github.com/surajkumarsahu01/weather-dashboard",
+        technologies: ["Flutter", "Firebase", "ZegoCloud API", "Node.js", "Express.js", "MongoDB"],
+        githubUrl: "https://github.com/sksahu01/Crime_Vision",
         liveUrl: "https://weather-analytics.vercel.app",
-        featured: false,
+        featured: true,
         status: "Completed",
         stars: 15
     },
     {
         id: 4,
-        title: "Social Media Dashboard",
-        description: "Comprehensive social media analytics platform with multi-platform integration, engagement tracking, and automated reporting features.",
+        title: "Sesmo (System for Earthquake Response and Rescue)",
+        description: "Comprehensive system for earthquake response and rescue operations, featuring real-time monitoring, communication, and resource management.",
         image: "/projects/social.jpg",
         technologies: ["React", "Express.js", "MongoDB", "Chart.js", "JWT"],
-        githubUrl: "https://github.com/surajkumarsahu01/social-dashboard",
+        githubUrl: "https://github.com/sksahu01/SESMO",
         liveUrl: "https://social-dashboard-demo.vercel.app",
         featured: false,
         status: "Completed",
@@ -63,7 +64,7 @@ const projects = [
         technologies: ["Next.js", "OpenAI API", "WebSocket", "Redis", "Prisma"],
         githubUrl: "https://github.com/surajkumarsahu01/ai-chat-app",
         liveUrl: "https://ai-chat-demo.vercel.app",
-        featured: true,
+        featured: false,
         status: "In Progress",
         stars: 32
     },
@@ -73,8 +74,8 @@ const projects = [
         description: "This very portfolio website you're viewing! Built with Next.js, Shadcn UI, and featuring 3D animations, smooth transitions, and modern design.",
         image: "/projects/portfolio.jpg",
         technologies: ["Next.js", "Shadcn UI", "Three.js", "Framer Motion", "TypeScript"],
-        githubUrl: "https://github.com/surajkumarsahu01/portfolio-website",
-        liveUrl: "https://surajkumarsahu.dev",
+        githubUrl: "https://github.com/sksahu01/surajkumarsahu",
+        liveUrl: "https://surajkumarsahu.vercel.app",
         featured: true,
         status: "Completed",
         stars: 45

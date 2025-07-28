@@ -15,12 +15,11 @@ const stats = [
 
 const highlights = [
     "Cloud computing & DevOps",
+    "Flutter Mobile app development",
+    "Database design & optimization",
     "Full-stack web development",
-    "Modern JavaScript frameworks",
     "Responsive UI/UX design",
     "Performance optimization",
-    "Database design & optimization",
-    "Flutter Mobile app development",
 ];
 
 export default function AboutSection() {
